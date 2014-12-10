@@ -20,6 +20,7 @@ import com.google.gerrit.reviewdb.client.Account;
 import com.google.gerrit.reviewdb.client.Branch.NameKey;
 import com.google.gerrit.reviewdb.client.Branch;
 import com.google.gerrit.reviewdb.client.Change;
+import com.google.gerrit.reviewdb.client.ContactInformation;
 import com.google.gerrit.reviewdb.client.PatchSet;
 import com.google.gerrit.reviewdb.client.Project;
 import com.google.gerrit.reviewdb.server.ReviewDb;
@@ -58,7 +59,7 @@ public final class DisabledChangeHooks implements ChangeHooks {
   }
 
   @Override
-  public void doClaSignupHook(Account account, ContributorAgreement cla) {
+  public void doClaSignupHook(Account account, ContributorAgreement cla, ContactInformation contactInformation) {
   }
 
   @Override

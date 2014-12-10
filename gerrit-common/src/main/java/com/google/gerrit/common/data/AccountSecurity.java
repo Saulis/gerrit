@@ -50,7 +50,7 @@ public interface AccountSecurity extends RemoteJsonService {
   @Audit
   @SignInRequired
   void enterAgreement(String agreementName,
-      AsyncCallback<VoidResult> callback);
+      ContactInformation contactInformation, AsyncCallback<VoidResult> callback);
 
   @Audit
   @SignInRequired

@@ -33,6 +33,16 @@ class ContactPanelFull extends ContactPanelShort {
   private NpTextBox countryTxt;
   private NpTextBox phoneTxt;
   private NpTextBox faxTxt;
+  private boolean useContactInformation;
+
+  public ContactPanelFull() {
+    this(false);
+  }
+
+  public ContactPanelFull(boolean useContactInformation) {
+    super();
+    this.useContactInformation = useContactInformation;
+  }
 
   @Override
   protected void onInitUI() {
@@ -65,16 +75,16 @@ class ContactPanelFull extends ContactPanelShort {
     hasContact.setStyleName(Gerrit.RESOURCES.css().accountContactOnFile());
     hasContact.setVisible(false);
 
-    if (Gerrit.getConfig().isUseContactInfo()) {
+    if (Gerrit.getConfig().isUseContactInfo() || useContactInformation) {
       body.add(privhtml);
       body.add(hasContact);
       body.add(infoSecure);
     }
 
-    row(infoSecure, 0, Util.C.contactFieldAddress(), addressTxt);
-    row(infoSecure, 1, Util.C.contactFieldCountry(), countryTxt);
-    row(infoSecure, 2, Util.C.contactFieldPhone(), phoneTxt);
-    row(infoSecure, 3, Util.C.contactFieldFax(), faxTxt);
+    row(infoSecure, 0, Util.C.contactFieldAddress()+"*", addressTxt);
+    row(infoSecure, 1, Util.C.contactFieldCountry()+"*", countryTxt);
+    row(infoSecure, 2, Util.C.contactFieldPhone()+"*", phoneTxt);
+    //row(infoSecure, 3, Util.C.contactFieldFax(), faxTxt);
 
     infoSecure.getCellFormatter().addStyleName(0, 0, Gerrit.RESOURCES.css().topmost());
     infoSecure.getCellFormatter().addStyleName(0, 1, Gerrit.RESOURCES.css().topmost());
@@ -84,7 +94,7 @@ class ContactPanelFull extends ContactPanelShort {
     sbl.listenTo(addressTxt);
     sbl.listenTo(countryTxt);
     sbl.listenTo(phoneTxt);
-    sbl.listenTo(faxTxt);
+    //sbl.listenTo(faxTxt);
   }
 
   @Override
@@ -113,18 +123,25 @@ class ContactPanelFull extends ContactPanelShort {
     displayHasContact(userAccount);
   }
 
+  public boolean contactInformationMissing() {
+    return addressTxt.getText().trim().isEmpty() ||
+           countryTxt.getText().trim().isEmpty() ||
+           phoneTxt.getText().trim().isEmpty();
+  }
+
   @Override
   ContactInformation toContactInformation() {
     final ContactInformation info;
-    if (Gerrit.getConfig().isUseContactInfo()) {
+    if (Gerrit.getConfig().isUseContactInfo() || useContactInformation) {
       info = new ContactInformation();
       info.setAddress(addressTxt.getText());
       info.setCountry(countryTxt.getText());
       info.setPhoneNumber(phoneTxt.getText());
-      info.setFaxNumber(faxTxt.getText());
+      //info.setFaxNumber(faxTxt.getText());
     } else {
       info = null;
     }
+
     return info;
   }
 }

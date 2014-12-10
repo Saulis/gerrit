@@ -168,7 +168,7 @@ class AccountSecurityImpl extends BaseServiceImplementation implements
     return a != null && a.equals(b);
   }
 
-  public void enterAgreement(final String agreementName,
+  public void enterAgreement(final String agreementName, final ContactInformation contactInformation,
       final AsyncCallback<VoidResult> callback) {
     run(callback, new Action<VoidResult>() {
       public VoidResult run(final ReviewDb db) throws OrmException, Failure {
@@ -191,7 +191,7 @@ class AccountSecurityImpl extends BaseServiceImplementation implements
         }
 
         Account account = user.get().getAccount();
-        hooks.doClaSignupHook(account, ca);
+        hooks.doClaSignupHook(account, ca, contactInformation);
 
         final AccountGroupMember.Key key =
             new AccountGroupMember.Key(account.getId(), group.getId());

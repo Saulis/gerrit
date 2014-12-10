@@ -24,6 +24,7 @@ import com.google.gerrit.lifecycle.LifecycleModule;
 import com.google.gerrit.reviewdb.client.Account;
 import com.google.gerrit.reviewdb.client.Branch;
 import com.google.gerrit.reviewdb.client.Change;
+import com.google.gerrit.reviewdb.client.ContactInformation;
 import com.google.gerrit.reviewdb.client.PatchSet;
 import com.google.gerrit.reviewdb.client.Project;
 import com.google.gerrit.reviewdb.server.ReviewDb;
@@ -591,12 +592,15 @@ public class ChangeHookRunner implements ChangeHooks, LifecycleListener {
       runHook(change.getProject(), topicChangedHook, args);
     }
 
-    public void doClaSignupHook(Account account, ContributorAgreement cla) {
+    public void doClaSignupHook(Account account, ContributorAgreement cla, ContactInformation contactInformation) {
       if (account != null) {
         final List<String> args = new ArrayList<String>();
         addArg(args, "--submitter", getDisplayName(account));
         addArg(args, "--user-id", account.getId().toString());
         addArg(args, "--cla-name", cla.getName());
+        addArg(args, "--address", contactInformation.getAddress());
+        addArg(args, "--country", contactInformation.getCountry());
+        addArg(args, "--phone", contactInformation.getPhoneNumber());
 
         runHook(claSignedHook, args);
       }

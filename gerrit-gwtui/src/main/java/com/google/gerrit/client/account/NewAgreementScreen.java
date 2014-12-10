@@ -66,6 +66,7 @@ public class NewAgreementScreen extends AccountScreen {
   private Panel finalGroup;
   private NpTextBox yesIAgreeBox;
   private Button submit;
+  private InlineLabel mandatoryFieldsLabel;
 
   public NewAgreementScreen() {
     this(null);
@@ -136,6 +137,9 @@ public class NewAgreementScreen extends AccountScreen {
         doSign();
       }
     });
+    mandatoryFieldsLabel = new InlineLabel("You need to fill out all mandatory fields");
+    mandatoryFieldsLabel.setVisible(false);
+    finalGroup.add(mandatoryFieldsLabel);
     finalGroup.add(submit);
     formBody.add(finalGroup);
     new OnEditEnabler(submit, yesIAgreeBox);
@@ -199,12 +203,16 @@ public class NewAgreementScreen extends AccountScreen {
 
     if (current == null
         || !Util.C.newAgreementIAGREE()
-            .equalsIgnoreCase(yesIAgreeBox.getText())) {
+            .equalsIgnoreCase(yesIAgreeBox.getText())
+         || contactPanel.contactInformationMissing()) {
       yesIAgreeBox.setText("");
       yesIAgreeBox.setFocus(true);
+      mandatoryFieldsLabel.setVisible(contactPanel.contactInformationMissing());
+
       return;
     }
 
+/*
     if (contactGroup.isVisible()) {
       contactPanel.doSave(new AsyncCallback<Account>() {
         @Override
@@ -218,11 +226,12 @@ public class NewAgreementScreen extends AccountScreen {
       });
     } else {
       doEnterAgreement();
-    }
+    }*/
+    doEnterAgreement();
   }
 
   private void doEnterAgreement() {
-    Util.ACCOUNT_SEC.enterAgreement(current.getName(),
+    Util.ACCOUNT_SEC.enterAgreement(current.getName(), contactPanel.toContactInformation(),
         new GerritCallback<VoidResult>() {
           public void onSuccess(final VoidResult result) {
             Gerrit.display(nextToken);
@@ -270,13 +279,12 @@ public class NewAgreementScreen extends AccountScreen {
       agreementGroup.setVisible(false);
     }
 
-    if (contactPanel == null && cla.isRequireContactInformation()) {
-      contactPanel = new ContactPanelFull();
+    if (contactPanel == null) {
+      contactPanel = new ContactPanelFull(true);
       contactGroup.add(contactPanel);
       contactPanel.hideSaveButton();
     }
-    contactGroup.setVisible(
-        cla.isRequireContactInformation() && cla.getAutoVerify() != null);
+    contactGroup.setVisible(cla.getAutoVerify() != null);
     finalGroup.setVisible(cla.getAutoVerify() != null);
     yesIAgreeBox.setText("");
     submit.setEnabled(false);

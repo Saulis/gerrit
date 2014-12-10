@@ -19,6 +19,7 @@ import com.google.gerrit.common.data.ContributorAgreement;
 import com.google.gerrit.reviewdb.client.Account;
 import com.google.gerrit.reviewdb.client.Branch;
 import com.google.gerrit.reviewdb.client.Change;
+import com.google.gerrit.reviewdb.client.ContactInformation;
 import com.google.gerrit.reviewdb.client.PatchSet;
 import com.google.gerrit.reviewdb.client.Project;
 import com.google.gerrit.reviewdb.server.ReviewDb;
@@ -158,7 +159,7 @@ public interface ChangeHooks {
   public void doTopicChangedHook(Change change, Account account,
       String oldTopic, ReviewDb db) throws OrmException;
 
-  public void doClaSignupHook(Account account, ContributorAgreement cla);
+  public void doClaSignupHook(Account account, ContributorAgreement cla, ContactInformation contactInformation);
 
   /**
    * Fire the Ref update Hook
